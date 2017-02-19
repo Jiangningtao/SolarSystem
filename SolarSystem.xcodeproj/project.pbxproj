@@ -262,6 +262,7 @@
 				TargetAttributes = {
 					FD8019591E556D2D00F54D86 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 5ZLH4SJD8E;
 						ProvisioningStyle = Automatic;
 					};
 					FD8019721E556D2E00F54D86 = {
@@ -528,9 +529,11 @@
 			baseConfigurationReference = 97E0490E3C8D98B2C5A9B879 /* Pods-SolarSystem.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 5ZLH4SJD8E;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/SolarSystem/BaseInfo/PrefixHeader.pch";
 				INFOPLIST_FILE = SolarSystem/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = yuanmaiwuliu.SolarSystem;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -542,9 +545,11 @@
 			baseConfigurationReference = 5AFD2524DCBF252A57367132 /* Pods-SolarSystem.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 5ZLH4SJD8E;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/SolarSystem/BaseInfo/PrefixHeader.pch";
 				INFOPLIST_FILE = SolarSystem/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = yuanmaiwuliu.SolarSystem;
 				PRODUCT_NAME = "$(TARGET_NAME)";
