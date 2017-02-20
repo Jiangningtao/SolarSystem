@@ -8,7 +8,13 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+#define SNOW_IMAGENAME         @"snow"
+#define IMAGE_X                arc4random()%(int)screen_width
+#define IMAGE_ALPHA            ((float)(arc4random()%10))/10
+#define IMAGE_WIDTH            arc4random()%20 + 10
+#define PLUS_HEIGHT            screen_height/25
+
+@interface ViewController ()<CAAnimationDelegate>
 {
     UIView * _bgView;
     UIView * _bgOfSolarSystem;
@@ -26,6 +32,12 @@
     UIImageView * _star6;
     UIImageView * _star7;
     
+    UIImageView * _meteor;   //  流星
+    UIImageView * _meteor1;    // 流星1
+    CGPoint _controlPoint;
+    CGPoint _endPoint;
+    CGPoint _controlPoint1;
+    CGPoint _endPoint1;
 }
 
 @end
@@ -36,7 +48,7 @@
     [super viewDidLoad];
     
     [self configUI];
-    
+    [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(makeSnow) userInfo:nil repeats:YES];
 }
 
 - (void)configUI
@@ -62,12 +74,21 @@
     [_bgOfSolarSystem addSubview:_earthImageView];
     
     
-    _homeImageView = [UIImageView imageViewWithFrame:CGRectMake(55*widthScale, 319*heightScale, 142*widthScale, 248*heightScale) image:@"home"];
+    _homeImageView = [UIImageView imageViewWithFrame:CGRectMake(55*widthScale, screen_height - 248*heightScale*0.618, 142*widthScale*0.618, 248*heightScale*0.618) image:@"home"];
     [_bgView addSubview:_homeImageView];
     
+    _meteor = [UIImageView imageViewWithFrame:CGRectMake(-20, 200, 17, 16) image:@"star1"];
+    [_bgView addSubview:_meteor];
+    _controlPoint = CGPointMake(screen_width/2, 100);
+    _endPoint = CGPointMake(screen_width+20, 80);
+    _meteor1 = [UIImageView imageViewWithFrame:CGRectMake(-20, 250, 12, 11) image:@"star4"];
+    [_bgView addSubview:_meteor1];
+    _controlPoint1 = CGPointMake(screen_width/2-40, 100);
+    _endPoint1 = CGPointMake(screen_width+20, 40);
     
     [self configAutoroatationAnimation];    // 自转动画
     [self configRevolutionAnimation];       // 公转动画
+    [self configMeteorMoveAnimation];       // 流星动画
 }
 
 - (void)configBigDipperStars
@@ -222,6 +243,60 @@
     animation2.fillMode =kCAFillModeForwards;
     [_earthImageView.layer addAnimation:animation2 forKey:@"animation2"];
     
+}
+
+- (void)configMeteorMoveAnimation
+{
+    [UIView animateWithDuration:1.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathMoveToPoint(path, NULL, _meteor.center.x, _meteor.center.y);
+        CGPathAddQuadCurveToPoint(path, NULL, _controlPoint.x, _controlPoint.y, _endPoint.x, _endPoint.y);
+        CAKeyframeAnimation * animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+        animation.delegate = self;
+        animation.duration = 1.5;
+        animation.fillMode = kCAFillModeForwards;
+        animation.repeatCount = 2;
+        animation.path = path;
+        animation.removedOnCompletion = NO;
+        CGPathRelease(path);
+        [_meteor.layer addAnimation:animation forKey:@"meteor"];
+    } completion:^(BOOL finished) {
+        
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathMoveToPoint(path, NULL, _meteor1.center.x, _meteor1.center.y);
+        CGPathAddQuadCurveToPoint(path, NULL, _controlPoint1.x, _controlPoint1.y, _endPoint1.x, _endPoint1.y);
+        CAKeyframeAnimation * animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+        animation.delegate = self;
+        animation.duration = 1;
+        animation.fillMode = kCAFillModeForwards;
+        animation.repeatCount = 2;
+        animation.path = path;
+        animation.removedOnCompletion = NO;
+        CGPathRelease(path);
+        [_meteor1.layer addAnimation:animation forKey:@"meteor"];
+    }];
+}
+
+- (void)makeSnow
+{
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:SNOW_IMAGENAME]];
+    float x = IMAGE_WIDTH;
+    imageView.frame = CGRectMake(IMAGE_X, -30, x, x);
+    imageView.alpha = IMAGE_ALPHA;
+    [self.view addSubview:imageView];
+    
+    [self snowFall:imageView];
+    
+}
+
+- (void)snowFall:(UIImageView *)aImageView
+{
+    [UIView beginAnimations:[NSString stringWithFormat:@"%li",(long)aImageView.tag] context:nil];
+    [UIView setAnimationDuration:6];
+    [UIView setAnimationDelegate:self];
+    aImageView.frame = CGRectMake(aImageView.frame.origin.x, screen_height, aImageView.frame.size.width, aImageView.frame.size.height);
+    NSLog(@"%@",aImageView);
+    [UIView commitAnimations];
 }
 
 - (void)didReceiveMemoryWarning {
